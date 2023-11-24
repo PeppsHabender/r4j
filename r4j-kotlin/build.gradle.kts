@@ -1,18 +1,6 @@
 plugins {
     kotlin("jvm") version embeddedKotlinVersion
-    `maven-publish`
-}
-
-publishing {
-    publications {
-        create<MavenPublication>("mavenKotlin") {
-            from(components["kotlin"])
-        }
-    }
-
-    repositories {
-        mavenLocal()
-    }
+    id("r4j.ghpackages")
 }
 
 repositories {

@@ -62,6 +62,11 @@ class R4JPlugin : Plugin<Project> {
 
         this.dependencies.add(IMPLEMENTATION_STR, DEPENDENCY_FORMAT.format("api"))
 
+        this.project.repositories.maven {
+            it.name = "GH Packages R4J"
+            it.url = uri("https://maven.pkg.github.com/peppshabender/r4j")
+        }
+
         afterEvaluate { project ->
             val config: R4JConfig = project.r4jConfig
 
