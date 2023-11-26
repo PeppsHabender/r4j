@@ -1,4 +1,5 @@
 plugins {
-    id("java")
-    id("r4j.ghpackages")
+    id("r4j.java-init")
 }
+
+project.description = "R4J Resource Api"

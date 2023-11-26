@@ -1,8 +1,9 @@
+description = "R4J Java Adapter"
+
 plugins {
-    id("java")
-    id("r4j.ghpackages")
+    id("r4j.java-init")
 }
 
 dependencies {
-    implementation(project(":r4j-api"))
+    api(project(":r4j-api"))
 }

@@ -1,14 +1,10 @@
-plugins {
-    kotlin("jvm") version embeddedKotlinVersion
-    id("r4j.ghpackages")
-}
+description = "R4J Kotlin Adapter"
 
-repositories {
-    mavenCentral()
+plugins {
+    id("r4j.kotlin-init")
 }
 
 dependencies {
     api(project(":r4j-api"))
-
     implementation(project(":r4j-java"))
 }
