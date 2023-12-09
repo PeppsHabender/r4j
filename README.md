@@ -1,10 +1,20 @@
 # R4J: Simple Resource Holders
 
-* Api [![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.github.peppshabender.r4j/r4j-api/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.github.peppshabender.r4j/r4j-api)
-* Java [![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.github.peppshabender.r4j/r4j-api/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.github.peppshabender.r4j/r4j-api)
-* Kotlin [![Maven Central](https://maven-badges.herokuapp.com/maven-central/io.github.peppshabender.r4j/r4j-api/badge.svg)](https://maven-badges.herokuapp.com/maven-central/io.github.peppshabender.r4j/r4j-api)
+<div align="center">
+
+![Gradle Plugin Portal](https://img.shields.io/gradle-plugin-portal/v/io.github.peppshabender.r4j?style=for-the-badge)
+[![GitHub License](https://img.shields.io/github/license/PeppsHabender/r4j?style=for-the-badge)](LICENSE)
+[![Maven Central](https://img.shields.io/maven-central/v/io.github.peppshabender.r4j/r4j-api?style=for-the-badge&label=API)](https://mvnrepository.com/artifact/io.github.peppshabender.r4j/r4j-api/)
+[![Maven Central](https://img.shields.io/maven-central/v/io.github.peppshabender.r4j/r4j-java?style=for-the-badge&label=Java)](https://mvnrepository.com/artifact/io.github.peppshabender.r4j/r4j-java/)
+[![Maven Central](https://img.shields.io/maven-central/v/io.github.peppshabender.r4j/r4j-kotlin?style=for-the-badge&label=Kotlin)](https://mvnrepository.com/artifact/io.github.peppshabender.r4j/r4j-kotlin/)
+[![Maven Central](https://img.shields.io/maven-central/v/io.github.peppshabender.r4j/r4j-kotlin-compose?style=for-the-badge&label=Jetpack%20Compose)](https://mvnrepository.com/artifact/io.github.peppshabender.r4j/r4j-kotlin-compose/)
+
+</div>
 
 R4J is a utility library that dynamically creates classes for the resources available to a source set. R4J consists of a gradle plugin as well as extension modules to make use of the created classes in java/kotlin. Each resource directory is represented by a nested enum, files by enum values respectively. Every enum implements [`io.github.peppshabender.r4j.Resource`](r4j-api/src/main/java/io/github/peppshabender/r4j/api/Resource.java) in order to be picked up by the extension modules.
+
+> [!NOTE]
+> This is intended for end-level application.. You don't want to expose your resource file structure
 
 ## Usage
 
