@@ -28,6 +28,7 @@ import io.github.peppshabender.r4j.gradle.spi.IResourceFileBuilder
 import io.github.peppshabender.r4j.gradle.spi.R
 import java.nio.file.Path
 import kotlin.io.path.absolutePathString
+import kotlin.io.path.extension
 import kotlin.io.path.name
 import kotlin.io.path.nameWithoutExtension
 
@@ -40,6 +41,7 @@ internal abstract class ResourceClassBuilder(
     protected abstract val nested: List<IResourceFileBuilder>
 
     private var clazz: String = "$header\n".indentLess()
+    private var identifiers: Set<String> = emptySet()
 
     override fun build(): String {
         val builtClass: StringBuilder = StringBuilder()
@@ -60,8 +62,17 @@ internal abstract class ResourceClassBuilder(
     }
 
     final override fun addResource(r: R.Resource) {
+        var varName: String = r.varName(this.config)
+        if(varName in this.identifiers) {
+            // !!! DUPLICATE ALERT !!!
+            // Looks like you're gonna get the extension anyway
+            varName += "_${r.file.extension.uppercase()}"
+        }
+
+        this.identifiers += varName
+
         this.clazz += "\n"
-        this.clazz += resourceCode(r.varName(this.config), r.file.resourcePath()).indent()
+        this.clazz += resourceCode(varName, r.file.resourcePath()).indent()
     }
 
     abstract fun resourceCode(identifier: String, value: String): String

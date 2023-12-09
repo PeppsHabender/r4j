@@ -31,30 +31,40 @@ import java.nio.charset.Charset
 
 
 /**
- * @see R4J.asStream
+ * @see R4JClassLoader.asStream
  */
-fun Resource.asStream(): InputStream = R4J.asStream(this)
+fun Resource.asStream(
+    classLoader: ClassLoader = Thread.currentThread().contextClassLoader
+): InputStream = R4JClassLoader.asStream(this, classLoader)
 
 /**
  * Uses [asStream] in a try-with-resources block.
  *
  * @see asStream
  */
-inline fun <T> Resource.useStream(block: (InputStream) -> T) = asStream().use(block)
+inline fun <T> Resource.useStream(
+    classLoader: ClassLoader = Thread.currentThread().contextClassLoader,
+    block: (InputStream) -> T
+) = asStream(classLoader).use(block)
 
 /**
- * @see R4J.asString
+ * @see R4JClassLoader.asString
  */
-fun Resource.asString(charset: Charset = Charset.defaultCharset()) = asStream().use {
-    it.readBytes().toString(charset)
-}
+fun Resource.asString(
+    charset: Charset = Charset.defaultCharset(),
+    classLoader: ClassLoader = Thread.currentThread().contextClassLoader
+): String = R4JClassLoader.asString(this, charset, classLoader)
 
 /**
- * @see R4J.asUrl
+ * @see R4JClassLoader.asUrl
  */
-fun Resource.asUrl(): URL = R4J.asUrl(this)
+fun Resource.asUrl(
+    classLoader: ClassLoader = Thread.currentThread().contextClassLoader
+): URL = R4JClassLoader.asUrl(this, classLoader)
 
 /**
- * @see R4J.asUri
+ * @see R4JClassLoader.asUri
  */
-fun Resource.asUri(): URI = asUrl().toURI()
+fun Resource.asUri(
+    classLoader: ClassLoader = Thread.currentThread().contextClassLoader
+): URI = asUrl(classLoader).toURI()

@@ -28,10 +28,13 @@ import io.github.peppshabender.r4j.gradle.spi.R
 import io.github.peppshabender.r4j.gradle.spi.R.ResourceContainer
 import io.github.peppshabender.r4j.gradle.utils.R4JConstants.R4J_CONFIG_STR
 import io.github.peppshabender.r4j.gradle.utils.R4JConstants.R4J_STR
+import io.github.peppshabender.r4j.gradle.utils.R4JDeps
+import io.github.peppshabender.r4j.gradle.utils.isKotlinMultiplatform
+import io.github.peppshabender.r4j.gradle.utils.jSourceSets
+import io.github.peppshabender.r4j.gradle.utils.kSourceSets
 import io.github.peppshabender.r4j.gradle.utils.normalizeClassName
 import io.github.peppshabender.r4j.gradle.utils.r4jConfig
 import io.github.peppshabender.r4j.gradle.utils.r4jModuleDir
-import io.github.peppshabender.r4j.gradle.utils.sourceSets
 import org.gradle.api.DefaultTask
 import org.gradle.api.Plugin
 import org.gradle.api.Project
@@ -61,19 +64,43 @@ class R4JPlugin : Plugin<Project> {
         afterEvaluate { project ->
             val config: R4JConfig = project.r4jConfig
 
-            project.tasks.findByName("processResources")?.finalizedBy(R4J_STR)
-            project.sourceSets.asMap.values.forEach { source ->
-                source.allJava.srcDirs.filter {
-                    project.buildDir.absolutePath !in it.absolutePath
-                }.forEach {
-                    source.java.srcDir(r4jModuleDir(it.parentFile.name, config))
-                }
-            }
+            applyJava(project, config)
+            applyKotlin(project, config)
 
             if(config.builder == R4JConfig.JAVA_BUILDER) {
                 project.tasks.findByName("compileJava")?.dependsOn(r4jTask)
             } else if(config.builder == R4JConfig.KOTLIN_BUILDER) {
                 project.tasks.findByName("compileKotlin")?.dependsOn(r4jTask)
+            }
+        }
+    }
+
+    private fun applyJava(project: Project, config: R4JConfig) {
+        if(project.isKotlinMultiplatform) {
+            return
+        }
+
+        project.dependencies.add("implementation", R4JDeps.api)
+        project.jSourceSets.asMap.values.forEach { source ->
+            source.allJava.srcDirs.filter {
+                project.buildDir.absolutePath !in it.absolutePath
+            }.forEach {
+                source.java.srcDir(project.r4jModuleDir(it.parentFile.name, config))
+            }
+        }
+    }
+
+    private fun applyKotlin(project: Project, config: R4JConfig) {
+        if(!project.isKotlinMultiplatform) {
+            return
+        }
+
+        project.dependencies.add("commonMainImplementation", R4JDeps.api)
+        project.kSourceSets.asMap.values.forEach { source ->
+            source.kotlin.srcDirs.filter {
+                project.buildDir.absolutePath !in it.absolutePath
+            }.forEach {
+                source.kotlin.srcDir(project.r4jModuleDir(it.parentFile.name, config))
             }
         }
     }
@@ -91,17 +118,7 @@ open class R4JTask : DefaultTask() {
         .resolve("generated").resolve("sources").resolve(R4J_STR).toPath()
 
     @InputFiles
-    val resourceDirs: List<Path> = this.project.sourceSets.asMap.values.filter {
-        it.name !in this.config.excludedSourceSets
-    }.flatMap { source ->
-        source.allJava.srcDirs.filter {
-            // We already added those to the source sets
-            this.project.buildDir.absolutePath !in it.absolutePath
-        }.map(File::toPath).map {
-            // Fetch the respective resource folder
-            it.resolveSibling("resources")
-        }
-    }
+    val resourceDirs: List<Path> = jResources() + kResources()
 
     init {
         this.group = R4J_STR
@@ -143,6 +160,30 @@ open class R4JTask : DefaultTask() {
                     builder.addNested(it.path.name.capitalized().normalizeClassName())
                 )
             }
+        }
+    }
+
+    companion object {
+        private fun R4JTask.jResources(): List<Path> = this.project.jSourceSets.asMap.values.filter {
+            it.name !in this.config.excludedSourceSets
+        }.flatMap { source ->
+            source.resources.srcDirs.filter {
+                // We already added those to the source sets
+                this.project.buildDir.absolutePath !in it.absolutePath
+            }.map(File::toPath)
+        }
+
+        private fun R4JTask.kResources(): List<Path> = if(!this.project.isKotlinMultiplatform)
+            emptyList()
+        else {
+            this.project.kSourceSets.asMap.values.filter {
+                it.name !in this.config.excludedSourceSets
+            }.flatMap {  source ->
+                source.resources.srcDirs.filter {
+                    // We already added those to the source sets
+                    this.project.buildDir.absolutePath !in it.absolutePath
+                }
+            }.map(File::toPath)
         }
     }
 }

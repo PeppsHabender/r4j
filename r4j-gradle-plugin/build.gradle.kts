@@ -1,4 +1,7 @@
+version = "0.0.2"
+
 plugins {
+    `java-gradle-plugin`
     kotlin("jvm")
     id("com.gradle.plugin-publish") version "1.2.1"
 }
@@ -23,12 +26,10 @@ gradlePlugin {
     }
 }
 
-kotlin {
-    jvmToolchain(17)
-}
-
 tasks.findByName("signPluginMavenPublication")?.enabled = false
 
 dependencies {
     implementation(project(":r4j-api"))
+
+    compileOnly("org.jetbrains.kotlin:kotlin-gradle-plugin:$embeddedKotlinVersion")
 }

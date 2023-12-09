@@ -29,32 +29,21 @@ import java.nio.file.Path
 /**
  * What the name says.. Duh
  */
-object R4JConstants {
+internal object R4JConstants {
     /**
      * r4j.
      */
-    internal const val R4J_STR = "r4j"
+    const val R4J_STR = "r4j"
 
     /**
      * r4jConfig. .
      * .
      */
-    internal const val R4J_CONFIG_STR = "${R4J_STR}Config"
+    const val R4J_CONFIG_STR = "${R4J_STR}Config"
 
     /**
      * Build directory for all R4J related stuff.
      */
-    internal val Project.r4jDir: Path
+    val Project.r4jDir: Path
         get() = this.buildDir.resolve("generated").resolve("sources").resolve("r4j").toPath()
 }
-
-object R4JDeps {
-    private const val DEPENDENCY_FORMAT: String = "io.github.peppshabender.r4j:r4j-%s:0.0.1"
-
-    val api: String = DEPENDENCY_FORMAT.format("api")
-    val java: String = DEPENDENCY_FORMAT.format("java")
-    val kotlin: String = DEPENDENCY_FORMAT.format("kotlin")
-}
-
-val Project.r4j: R4JDeps
-    get() = R4JDeps

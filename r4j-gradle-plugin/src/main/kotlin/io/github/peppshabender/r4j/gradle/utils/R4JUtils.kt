@@ -25,16 +25,28 @@ package io.github.peppshabender.r4j.gradle.utils
 
 import io.github.peppshabender.r4j.gradle.R4JConfig
 import io.github.peppshabender.r4j.gradle.utils.R4JConstants.r4jDir
+import org.gradle.api.NamedDomainObjectContainer
 import org.gradle.api.Project
 import org.gradle.api.plugins.JavaPluginExtension
 import org.gradle.api.tasks.SourceSetContainer
+import org.jetbrains.kotlin.gradle.dsl.KotlinMultiplatformExtension
+import org.jetbrains.kotlin.gradle.plugin.KotlinSourceSet
 import java.nio.file.Path
+
+internal val Project.isKotlinMultiplatform: Boolean
+    get() = this.plugins.hasPlugin("org.jetbrains.kotlin.multiplatform")
 
 /**
  * Collects all source sets of the project via the [JavaPluginExtension].
  */
-internal val Project.sourceSets: SourceSetContainer
+internal val Project.jSourceSets: SourceSetContainer
     get() = this.extensions.getByType(JavaPluginExtension::class.java).sourceSets
+
+/**
+ * Collects all source sets of the project via the [KotlinMultiplatformExtension].
+ */
+internal val Project.kSourceSets: NamedDomainObjectContainer<KotlinSourceSet>
+    get() = this.extensions.getByType(KotlinMultiplatformExtension::class.java).sourceSets
 
 /**
  * Fetches the current [R4JConfig] for the project.

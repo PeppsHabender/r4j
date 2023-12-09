@@ -46,7 +46,7 @@ internal class KotlinFileBuilder private constructor(
     override var nested: List<KotlinFileBuilder> = emptyList()
 
 
-    override fun resourceCode(identifier: String, value: String): String = "$identifier(\"$value\")"
+    override fun resourceCode(identifier: String, value: String): String = "$identifier(\"$value\"),"
 
     override fun addNested(className: String): IResourceFileBuilder =
         KotlinFileBuilder(className, this.config, this.indent + 1).also {
